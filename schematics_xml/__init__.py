@@ -19,4 +19,4 @@ __docformat__ = 'restructuredtext'
 
 # -eof meta-
 
-from schematics_xml.models import XMLModel
+from schematics_xml.models import XMLModel  # pylint: disable=wrong-import-position
