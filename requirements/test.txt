@@ -1,4 +1,7 @@
 -r default.txt
 
 py==1.4.31
-pytest==3.0.3
+pytest>=3,<=4
+pylint>=1.6,<=2
+codecov
+coverage

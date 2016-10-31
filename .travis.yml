@@ -22,9 +22,6 @@ matrix:
       env: TOXENV=pypy3
 
 install:
-  - pip install tox
-  - pip install codecov
-  - pip install Django==1.10
   - pip install -r requirements/test.txt
   - pip install -r requirements/docs.txt
 
