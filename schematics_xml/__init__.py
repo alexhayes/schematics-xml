@@ -10,7 +10,7 @@ VersionInfo = namedtuple(
     'VersionInfo', ('major', 'minor', 'micro', 'releaselevel', 'serial'),
 )
 
-VERSION = VersionInfo(0, 1, 0, '', '')
+VERSION = VersionInfo(0, 1, 1, '', '')
 __version__ = '{0.major}.{0.minor}.{0.micro}{0.releaselevel}'.format(VERSION)
 __author__ = 'Alex Hayes'
 __contact__ = 'alex@alution.com'
@@ -19,4 +19,4 @@ __docformat__ = 'restructuredtext'
 
 # -eof meta-
 
-from schematics_xml.models import XMLModel
+from schematics_xml.models import XMLModel  # pylint: disable=wrong-import-position

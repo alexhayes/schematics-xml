@@ -17,14 +17,15 @@ matrix:
     - python: pypy
       env: TOXENV=pypy
 
-    # pypy
+    # pypy3
     - python: pypy3
       env: TOXENV=pypy3
 
+  allow_failures:
+    - python: pypy
+    - python: pypy3
+
 install:
-  - pip install tox
-  - pip install codecov
-  - pip install Django==1.10
   - pip install -r requirements/test.txt
   - pip install -r requirements/docs.txt
 
