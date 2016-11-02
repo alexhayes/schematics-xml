@@ -26,7 +26,7 @@ class XMLModel(Model):
     def xml_root(self):
         return type(self).__name__.lower()
 
-    def to_xml(self, *, role: str=None, app_data: dict=None, **kwargs) -> str:
+    def to_xml(self, role: str=None, app_data: dict=None, **kwargs) -> str:
         """
         Return a string of XML that represents this model.
 
