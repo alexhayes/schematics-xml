@@ -13,10 +13,9 @@ import pytest
 from schematics import Model
 from schematics.types import StringType, IntType, FloatType, DecimalType, ModelType, DictType, LongType, UUIDType, \
     MD5Type, SHA1Type, BooleanType, DateType, DateTimeType, UTCDateTimeType, TimestampType, GeoPointType, \
-    MultilingualStringType, ListType, IPv4Type, IPv6Type, URLType, EmailType, UnionType
-from schematics.types.compound import PolyModelType
+    MultilingualStringType, ListType, IPv4Type, IPv6Type, URLType, EmailType, UnionType, PolyModelType
 
-from schematics_xml.models import XMLModel, model_has_field_type
+from schematics_xml.models import XMLModel, model_has_field_type, ensure_lists_in_model
 
 
 class TestUUIDType:
@@ -450,7 +449,7 @@ class TestListTypeOfIntType:
         assert person.favorite_numbers == [1, 2, 3]
 
 
-class TestListTypeOfModelType:
+class TestListTypeOfModelMultipleItemsType:
     _person_cls = None
 
     class Color(XMLModel):
@@ -495,6 +494,43 @@ class TestListTypeOfModelType:
         assert person.favorite_colors[0].name == 'red'  # pylint: disable=unsubscriptable-object
         assert person.favorite_colors[1].name == 'green'  # pylint: disable=unsubscriptable-object
         assert person.favorite_colors[2].name == 'blue'  # pylint: disable=unsubscriptable-object
+
+
+class TestListTypeOfModelSingleItemType:
+    _person_cls = None
+
+    class Color(XMLModel):
+        name = StringType()
+
+    @property
+    def Person(self):  # pylint: disable=invalid-name
+        if not self._person_cls:
+            class Person(XMLModel):
+                favorite_colors = ListType(ModelType(self.Color))
+            self._person_cls = Person
+        return self._person_cls
+
+    xml = (
+        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b'<person>\n'
+        b'  <favorite_colors>\n'
+        b'    <name>red</name>\n'
+        b'  </favorite_colors>\n'
+        b'</person>\n'
+    )
+
+    def test_to_xml(self):
+        john = self.Person(dict(favorite_colors=[
+            self.Color(dict(name='red')),
+        ]))
+        actual = john.to_xml()
+        assert actual == self.xml
+
+    def test_from_xml(self):
+        person = self.Person.from_xml(self.xml)
+        assert isinstance(person, self.Person)
+        assert len(person.favorite_colors) == 1
+        assert person.favorite_colors[0].name == 'red'  # pylint: disable=unsubscriptable-object
 
 
 class TestDictType:
@@ -782,3 +818,223 @@ class TestHasFieldType:
         assert model_has_field_type(FloatType, Container) is True
         assert model_has_field_type(DecimalType, Container) is True
         assert model_has_field_type(EmailType, Container) is False
+
+
+class TestEnsureLists:
+    """
+    Tests for :py:func:`.ensure_lists_in_model`.
+    """
+
+    def test_model_with_listtype_of_inttype(self):  # pylint: disable=no-self-use,invalid-name
+        """
+        Ensure a model with a list type can be handled.
+        """
+        class TestModel(XMLModel):
+            numbers = ListType(IntType())
+
+        bad_data = dict(numbers=1)
+        actual = ensure_lists_in_model(bad_data, TestModel)
+        expected = dict(numbers=[1])
+        # Assert bad data can be turned good
+        assert actual == expected
+
+        actual = ensure_lists_in_model(expected, TestModel)
+        # Assert good data stays good
+        assert actual == expected
+
+    def test_model_with_listtype_of_modeltype(self):  # pylint: disable=no-self-use,invalid-name
+        """
+        Test that a model with a list type of models can correctly be
+        """
+        class Item(XMLModel):
+            number = IntType()
+
+        class TestModel(XMLModel):
+            items = ListType(ModelType(Item))
+
+        bad_data = dict(
+            items=dict(number=1)
+        )
+        actual = ensure_lists_in_model(bad_data, TestModel)
+        expected = dict(
+            items=[
+                dict(number=1)
+            ]
+        )
+        # Assert bad data can be turned good
+        assert actual == expected
+
+        actual = ensure_lists_in_model(expected, TestModel)
+        # Assert good data stays good
+        assert actual == expected
+
+    def test_model_with_listtype_of_modeltype_with_listtype_of_modeltype(self):  # pylint: disable=no-self-use,invalid-name
+        """
+        Test that a model with a list type of models can correctly be
+        """
+        class Item(XMLModel):
+            number = IntType()
+
+        class Package(XMLModel):
+            items = ListType(ModelType(Item))
+
+        class TestModel(XMLModel):
+            packages = ListType(ModelType(Package))
+
+        bad_data = dict(
+            packages=dict(
+                items=dict(number=1)
+            )
+        )
+        actual = ensure_lists_in_model(bad_data, TestModel)
+        expected = dict(
+            packages=[
+                dict(
+                    items=[
+                        dict(number=1)
+                    ]
+                )
+            ]
+        )
+        # Assert bad data can be turned good
+        assert actual == expected
+
+        actual = ensure_lists_in_model(expected, TestModel)
+        # Assert good data stays good
+        assert actual == expected
+
+    def test_model_with_modeltype_with_listtype_of_modeltype(self):  # pylint: disable=no-self-use,invalid-name
+        class Item(XMLModel):
+            number = IntType()
+
+        class Container(XMLModel):
+            items = ListType(ModelType(Item))
+
+        class TestModel(XMLModel):
+            container = ModelType(Container)
+
+        bad_data = dict(
+            container=dict(
+                items=dict(number=1)
+            )
+        )
+        actual = ensure_lists_in_model(bad_data, TestModel)
+        expected = dict(
+            container=dict(
+                items=[
+                    dict(number=1)
+                ]
+            )
+        )
+        # Assert bad data can be turned good
+        assert actual == expected
+
+        actual = ensure_lists_in_model(expected, TestModel)
+        # Assert good data stays good
+        assert actual == expected
+
+    def test_model_with_dicttype_of_listtype_of_modeltype(self):  # pylint: disable=no-self-use,invalid-name
+        class Item(XMLModel):
+            number = StringType()
+
+        class TestModel(XMLModel):
+            items = DictType(ListType(ModelType(Item)))
+
+        bad_data = dict(
+            items=dict(
+                bars=dict(number=1)
+            )
+        )
+        actual = ensure_lists_in_model(bad_data, TestModel)
+        expected = dict(
+            items=dict(
+                bars=[
+                    dict(number=1)
+                ]
+            )
+        )
+        # Assert bad data can be turned good
+        assert actual == expected
+
+        actual = ensure_lists_in_model(expected, Model)
+        # Assert good data stays good
+        assert actual == expected
+
+    def test_model_with_dicttype_of_modeltype_with_listtype(self):  # pylint: disable=no-self-use,invalid-name
+        class Item(XMLModel):
+            number = IntType()
+
+        class Container(XMLModel):
+            items = ListType(ModelType(Item))
+
+        class TestModel(XMLModel):
+            containers = DictType(ModelType(Container))
+
+        bad_data = dict(
+            containers=dict(
+                a=dict(
+                    items=dict(number=1)
+                )
+            )
+        )
+        actual = ensure_lists_in_model(bad_data, TestModel)
+        expected = dict(
+            containers=dict(
+                a=dict(
+                    items=[
+                        dict(number=1)
+                    ]
+                )
+            )
+        )
+        # Assert bad data can be turned good
+        assert actual == expected
+
+        actual = ensure_lists_in_model(expected, TestModel)
+        # Assert good data stays good
+        assert actual == expected
+
+    def test_poly_model_type_raises(self):  # pylint: disable=no-self-use,invalid-name
+        """
+        PolyModelType is not implemented yet.
+        """
+        class Package(XMLModel):
+            title = StringType()
+
+        class Item(XMLModel):
+            number = IntType()
+
+        class TestModel(XMLModel):
+            items = ListType(PolyModelType([Item, Package]))
+
+        bad_data = dict(
+            items=dict(number=1)
+        )
+        actual = ensure_lists_in_model(bad_data, TestModel)
+        expected = dict(
+            items=[
+                dict(number=1)
+            ]
+        )
+        # Assert bad data can be turned good
+        assert actual == expected
+
+        actual = ensure_lists_in_model(expected, TestModel)
+        # Assert good data stays good
+        assert actual == expected
+
+        bad_data = dict(
+            items=dict(title='Great products')
+        )
+        actual = ensure_lists_in_model(bad_data, TestModel)
+        expected = dict(
+            items=[
+                dict(title='Great products')
+            ]
+        )
+        # Assert bad data can be turned good
+        assert actual == expected
+
+        actual = ensure_lists_in_model(expected, TestModel)
+        # Assert good data stays good
+        assert actual == expected

@@ -12,7 +12,7 @@ import numbers
 import lxml.builder
 import lxml.etree
 from schematics import Model
-from schematics.types import BaseType, ModelType, CompoundType
+from schematics.types import BaseType, ModelType, CompoundType, ListType, DictType
 from schematics.types.base import MultilingualStringType
 from schematics.types.compound import PolyModelType
 from xmltodict import parse
@@ -92,6 +92,9 @@ class XMLModel(Model):
         if len(primitive) != 1:
             raise NotImplementedError
         for _, raw_data in primitive.items():
+            if model_has_field_type(ListType, cls):
+                # We need to ensure that single item lists are actually lists and not dicts
+                raw_data = ensure_lists_in_model(raw_data, cls)
             return cls(raw_data=raw_data)
 
 
@@ -152,3 +155,46 @@ def field_has_type(needle: BaseType, field: BaseType) -> bool:  # pylint: disabl
             return True
 
     return False
+
+
+def ensure_lists_in_model(raw_data: dict, model_cls: XMLModel):
+    """
+    Ensure that single item lists are represented as lists and not dicts.
+
+    In XML single item lists are converted to dicts by xmltodict - there is essentially no
+    way for xmltodict to know that it *should* be a list not a dict.
+
+    :param raw_data:
+    :param model_cls:
+    """
+    if not model_has_field_type(ListType, model_cls):
+        return raw_data
+
+    for _, field in model_cls._field_list:  # pylint: disable=protected-access
+        key = field.serialized_name or field.name
+        try:
+            value = raw_data[key]
+        except KeyError:
+            continue
+
+        raw_data[key] = ensure_lists_in_value(value, field)
+
+    return raw_data
+
+
+def ensure_lists_in_value(value: 'typing.Any', field: BaseType):
+
+    if isinstance(field, ListType) and not isinstance(value, list):
+        value = [
+            ensure_lists_in_value(value, field.field)
+        ]
+
+    elif field_has_type(ListType, field):
+        if isinstance(field, DictType):
+            for _key, _value in value.items():
+                value[_key] = ensure_lists_in_value(_value, field.field)
+
+        elif isinstance(field, ModelType):
+            value = ensure_lists_in_model(value, field.model_class)
+
+    return value
