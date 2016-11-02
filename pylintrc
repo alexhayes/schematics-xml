@@ -7,7 +7,7 @@ disable=
     missing-docstring
 
 [REPORTS]
-
+reports=no
 output-format=colorized
 
 [TYPECHECK]
