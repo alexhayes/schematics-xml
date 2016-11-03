@@ -1038,3 +1038,21 @@ class TestEnsureLists:
         actual = ensure_lists_in_model(expected, TestModel)
         # Assert good data stays good
         assert actual == expected
+
+
+class TestEncoding:
+
+    class Person(XMLModel):
+        pk = UUIDType()  # pylint: disable=invalid-name
+
+    xml = (
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
+        b'<person>\n'
+        b'  <pk>32c5548e-ddee-4b23-a06e-f387a15bcac9</pk>\n'
+        b'</person>\n'
+    )
+
+    def test_to_xml(self):
+        john = self.Person(dict(pk='32c5548e-ddee-4b23-a06e-f387a15bcac9'))
+        actual = john.to_xml(encoding='UTF-8')
+        assert actual == self.xml

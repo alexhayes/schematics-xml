@@ -26,7 +26,7 @@ class XMLModel(Model):
     def xml_root(self):
         return type(self).__name__.lower()
 
-    def to_xml(self, role: str=None, app_data: dict=None, **kwargs) -> str:
+    def to_xml(self, role: str=None, app_data: dict=None, encoding: str='ISO-8859-1', **kwargs) -> str:
         """
         Return a string of XML that represents this model.
 
@@ -34,6 +34,7 @@ class XMLModel(Model):
 
         :param role: schematics Model to_primitive role parameter.
         :param app_data: schematics Model to_primitive app_data parameter.
+        :param encoding: xml encoding attribute string.
         :param kwargs: schematics Model to_primitive kwargs parameter.
         """
         primitive = self.to_primitive(role=role, app_data=app_data, **kwargs)
@@ -42,7 +43,7 @@ class XMLModel(Model):
             root,
             pretty_print=True,
             xml_declaration=True,
-            encoding='ISO-8859-1'
+            encoding=encoding
         )
 
     def primitive_to_xml(self, primitive: dict, parent: 'lxml.etree._Element'=None):
