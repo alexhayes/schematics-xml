@@ -184,10 +184,16 @@ def ensure_lists_in_model(raw_data: dict, model_cls: XMLModel):
 
 def ensure_lists_in_value(value: 'typing.Any', field: BaseType):
 
-    if isinstance(field, ListType) and not isinstance(value, list):
-        value = [
-            ensure_lists_in_value(value, field.field)
-        ]
+    if isinstance(field, ListType):
+        if not isinstance(value, list):
+            value = [
+                ensure_lists_in_value(value, field.field)
+            ]
+        elif field_has_type(ListType, field.field):
+            value = [
+                ensure_lists_in_value(_value, field.field)
+                for _value in value
+            ]
 
     elif field_has_type(ListType, field):
         if isinstance(field, DictType):

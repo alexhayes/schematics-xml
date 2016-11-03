@@ -870,27 +870,29 @@ class TestEnsureLists:
 
     def test_model_with_listtype_of_modeltype_with_listtype_of_modeltype(self):  # pylint: disable=no-self-use,invalid-name
         """
-        Test that a model with a list type of models can correctly be
+        Test that a model with a list type of models are correctly converted.
+
+        This test also tests the serialized_name functionality of schematics.
         """
         class Item(XMLModel):
             number = IntType()
 
         class Package(XMLModel):
-            items = ListType(ModelType(Item))
+            items = ListType(ModelType(Item), serialized_name='contents')
 
         class TestModel(XMLModel):
-            packages = ListType(ModelType(Package))
+            packages = ListType(ModelType(Package), serialized_name='pkg')
 
         bad_data = dict(
-            packages=dict(
-                items=dict(number=1)
+            pkg=dict(
+                contents=dict(number=1)
             )
         )
         actual = ensure_lists_in_model(bad_data, TestModel)
         expected = dict(
-            packages=[
+            pkg=[
                 dict(
-                    items=[
+                    contents=[
                         dict(number=1)
                     ]
                 )
@@ -901,6 +903,17 @@ class TestEnsureLists:
 
         actual = ensure_lists_in_model(expected, TestModel)
         # Assert good data stays good
+        assert actual == expected
+
+        # Assert data is traversed even if the parent is OK.
+        bad_data = dict(
+            pkg=[
+                dict(
+                    contents=dict(number=1)
+                )
+            ]
+        )
+        actual = ensure_lists_in_model(bad_data, TestModel)
         assert actual == expected
 
     def test_model_with_modeltype_with_listtype_of_modeltype(self):  # pylint: disable=no-self-use,invalid-name
