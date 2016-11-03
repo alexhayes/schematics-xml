@@ -91,3 +91,6 @@ ENV/
 # direnv
 .envrc
 .direnv
+
+# pycharm
+.idea

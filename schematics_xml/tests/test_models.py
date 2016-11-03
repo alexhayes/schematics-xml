@@ -24,7 +24,7 @@ class TestUUIDType:
         pk = UUIDType()  # pylint: disable=invalid-name
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<person>\n'
         b'  <pk>32c5548e-ddee-4b23-a06e-f387a15bcac9</pk>\n'
         b'</person>\n'
@@ -47,7 +47,7 @@ class TestStringType:
         name = StringType()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<person>\n'
         b'  <name>John</name>\n'
         b'</person>\n'
@@ -70,7 +70,7 @@ class TestIntType:
         age = IntType()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<person>\n'
         b'  <age>18</age>\n'
         b'</person>\n'
@@ -93,7 +93,7 @@ class TestLongType:
         pk = LongType()  # pylint: disable=invalid-name
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<person>\n'
         b'  <pk>1832932875982759827298</pk>\n'
         b'</person>\n'
@@ -116,7 +116,7 @@ class TestFloatType:
         height = FloatType()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<person>\n'
         b'  <height>12.2</height>\n'
         b'</person>\n'
@@ -139,7 +139,7 @@ class TestDecimalType:
         height = DecimalType()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<person>\n'
         b'  <height>12.2</height>\n'
         b'</person>\n'
@@ -162,7 +162,7 @@ class TestMD5Type:
         md5 = MD5Type()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<file>\n'
         b'  <md5>efe2d5fd46824508b8a0082c8279bbae</md5>\n'
         b'</file>\n'
@@ -185,7 +185,7 @@ class TestSHA1Type:
         sha1 = SHA1Type()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<file>\n'
         b'  <sha1>2eE84Ef6301cCEc5926C4ADBF3E9B51c6c42ade3</sha1>\n'
         b'</file>\n'
@@ -208,7 +208,7 @@ class TestBooleanType:
         active = BooleanType()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<user>\n'
         b'  <active>1</active>\n'
         b'</user>\n'
@@ -231,7 +231,7 @@ class TestDateType:
         birthdate = DateType()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<user>\n'
         b'  <birthdate>2016-01-01</birthdate>\n'
         b'</user>\n'
@@ -254,7 +254,7 @@ class TestDateTimeType:
         created = DateTimeType()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<user>\n'
         b'  <created>2016-01-01T08:30:32.000000</created>\n'
         b'</user>\n'
@@ -277,7 +277,7 @@ class TestUTCDateTimeType:
         created = UTCDateTimeType()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<user>\n'
         b'  <created>2016-01-01T08:30:32.000000Z</created>\n'
         b'</user>\n'
@@ -300,7 +300,7 @@ class TestTimestampType:
         created = TimestampType()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<user>\n'
         b'  <created>1451637032</created>\n'
         b'</user>\n'
@@ -324,7 +324,7 @@ class TestGeoPointType:
         point = GeoPointType()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<place>\n'
         b'  <point>23</point>\n'
         b'  <point>170</point>\n'
@@ -349,7 +349,7 @@ class TestMultilingualStringType:
         text = MultilingualStringType()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<animal>\n'
         b'  <text>serpent</text>\n'
         b'</animal>\n'
@@ -376,7 +376,7 @@ class TestMultilingualStringType:
             child = ModelType(self.Animal)
 
         xml = (
-            b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+            b"<?xml version='1.0' encoding='UTF-8'?>\n"
             b'<parent>\n'
             b'  <child>\n'
             b'    <text>serpent</text>\n'
@@ -396,7 +396,7 @@ class TestModelType:
         name = StringType()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<person>\n'
         b'  <pet>\n'
         b'    <name>Garfield</name>\n'
@@ -430,7 +430,7 @@ class TestListTypeOfIntType:
         favorite_numbers = ListType(IntType())
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<person>\n'
         b'  <favorite_numbers>1</favorite_numbers>\n'
         b'  <favorite_numbers>2</favorite_numbers>\n'
@@ -464,7 +464,7 @@ class TestListTypeOfModelMultipleItemsType:
         return self._person_cls
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<person>\n'
         b'  <favorite_colors>\n'
         b'    <name>red</name>\n'
@@ -511,7 +511,7 @@ class TestListTypeOfModelSingleItemType:
         return self._person_cls
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<person>\n'
         b'  <favorite_colors>\n'
         b'    <name>red</name>\n'
@@ -539,7 +539,7 @@ class TestDictType:
         payload = DictType(StringType())
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<request>\n'
         b'  <payload>\n'
         b'    <foo>bar</foo>\n'
@@ -575,7 +575,7 @@ class TestPolyModelType:
         return self._recipe_item_cls
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<recipeitem>\n'
         b'  <item>\n'
         b'    <yolks>2</yolks>\n'
@@ -602,7 +602,7 @@ class TestIPv4Type:
         ip_address = IPv4Type()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<proxy>\n'
         b'  <ip_address>8.8.8.8</ip_address>\n'
         b'</proxy>\n'
@@ -624,7 +624,7 @@ class TestIPv6Type:
         ip_address = IPv6Type()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<proxy>\n'
         b'  <ip_address>2001:db8:85a3::8a2e:370:7334</ip_address>\n'
         b'</proxy>\n'
@@ -646,7 +646,7 @@ class TestURLType:
         url = URLType()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<site>\n'
         b'  <url>https://github.com/alexhayes/schematics-xml</url>\n'
         b'</site>\n'
@@ -668,7 +668,7 @@ class TestEmailType:
         email = EmailType()
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<user>\n'
         b'  <email>user@example.com</email>\n'
         b'</user>\n'
@@ -692,7 +692,7 @@ class TestUnionType:
         union = UnionType([IntType, StringType])
 
     xml = (
-        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b"<?xml version='1.0' encoding='UTF-8'?>\n"
         b'<foo>\n'
         b'  <union>2</union>\n'
         b'</foo>\n'
@@ -1051,3 +1051,30 @@ class TestEnsureLists:
         actual = ensure_lists_in_model(expected, TestModel)
         # Assert good data stays good
         assert actual == expected
+
+
+class TestEncoding:  # pylint: disable=too-few-public-methods
+
+    xml = (
+        b"<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+        b'<person>\n'
+        b'  <pk>32c5548e-ddee-4b23-a06e-f387a15bcac9</pk>\n'
+        b'</person>\n'
+    )
+
+    def test_to_xml_accepts_encoding(self):
+        class Person(XMLModel):
+            pk = UUIDType()  # pylint: disable=invalid-name
+
+        john = Person(dict(pk='32c5548e-ddee-4b23-a06e-f387a15bcac9'))
+        actual = john.to_xml(encoding='ISO-8859-1')
+        assert actual == self.xml
+
+    def test_to_xml_uses_xml_encoding_model_attr(self):  # pylint: disable=invalid-name
+        class Person(XMLModel):
+            xml_encoding = 'ISO-8859-1'
+            pk = UUIDType()  # pylint: disable=invalid-name
+
+        john = Person(dict(pk='32c5548e-ddee-4b23-a06e-f387a15bcac9'))
+        actual = john.to_xml()
+        assert actual == self.xml

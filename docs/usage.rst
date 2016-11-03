@@ -19,7 +19,7 @@ XML now contains;
 
 .. code-block:: xml
 
-    <?xml version='1.0' encoding='ISO-8859-1'?>
+    <?xml version='1.0' encoding='UTF-8'?>
     <person>
       <name>John</name>
     </person>
@@ -55,7 +55,36 @@ XML now contains;
 
 .. code-block:: xml
 
-    <?xml version='1.0' encoding='ISO-8859-1'?>
+    <?xml version='1.0' encoding='UTF-8'?>
     <cat>
       <kind>cat</kind>
+    </cat>
+
+
+Encoding
+--------
+
+By default the encoding returned :py:meth:`.XMLModel.to_xml` is `UTF-8` however
+this can be changed either by setting the `xml_encoding` attribute on the model
+or by setting the `encoding` kwarg when calling :py:meth:`.XMLModel.to_xml`.
+
+.. code-block:: python
+
+    from schematics_xml import XMLModel
+
+    class Animal(XMLModel):
+        xml_encoding = 'UTF-8'
+        kind = StringType()
+
+    garfield = Animal(dict(kind='cat'))
+
+    xml = garfield.to_xml()
+
+XML now contains;
+
+.. code-block:: xml
+
+    <?xml version='1.0' encoding='UTF-8'?>
+    <cat>
+      <animal>cat</animal>
     </cat>
