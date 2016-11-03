@@ -23,10 +23,16 @@ class XMLModel(Model):
     A model that can convert it's fields to and from XML.
     """
     @property
-    def xml_root(self):
+    def xml_root(self) -> str:
+        """
+        Override this attribute to set the XML root returned by :py:meth:`.XMLModel.to_xml`.
+        """
         return type(self).__name__.lower()
 
-    def to_xml(self, role: str=None, app_data: dict=None, **kwargs) -> str:
+    #: Override this attribute to set the encoding specified in the XML returned by :py:meth:`.XMLModel.to_xml`.
+    xml_encoding = 'UTF-8'
+
+    def to_xml(self, role: str=None, app_data: dict=None, encoding: str=None, **kwargs) -> str:
         """
         Return a string of XML that represents this model.
 
@@ -34,6 +40,7 @@ class XMLModel(Model):
 
         :param role: schematics Model to_primitive role parameter.
         :param app_data: schematics Model to_primitive app_data parameter.
+        :param encoding: xml encoding attribute string.
         :param kwargs: schematics Model to_primitive kwargs parameter.
         """
         primitive = self.to_primitive(role=role, app_data=app_data, **kwargs)
@@ -42,7 +49,7 @@ class XMLModel(Model):
             root,
             pretty_print=True,
             xml_declaration=True,
-            encoding='ISO-8859-1'
+            encoding=encoding or self.xml_encoding
         )
 
     def primitive_to_xml(self, primitive: dict, parent: 'lxml.etree._Element'=None):
@@ -184,10 +191,16 @@ def ensure_lists_in_model(raw_data: dict, model_cls: XMLModel):
 
 def ensure_lists_in_value(value: 'typing.Any', field: BaseType):
 
-    if isinstance(field, ListType) and not isinstance(value, list):
-        value = [
-            ensure_lists_in_value(value, field.field)
-        ]
+    if isinstance(field, ListType):
+        if not isinstance(value, list):
+            value = [
+                ensure_lists_in_value(value, field.field)
+            ]
+        elif field_has_type(ListType, field.field):
+            value = [
+                ensure_lists_in_value(_value, field.field)
+                for _value in value
+            ]
 
     elif field_has_type(ListType, field):
         if isinstance(field, DictType):
