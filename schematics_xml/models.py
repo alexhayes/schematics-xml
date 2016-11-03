@@ -23,10 +23,16 @@ class XMLModel(Model):
     A model that can convert it's fields to and from XML.
     """
     @property
-    def xml_root(self):
+    def xml_root(self) -> str:
+        """
+        Override this attribute to set the XML root returned by :py:meth:`.XMLModel.to_xml`.
+        """
         return type(self).__name__.lower()
 
-    def to_xml(self, role: str=None, app_data: dict=None, encoding: str='ISO-8859-1', **kwargs) -> str:
+    #: Override this attribute to set the encoding specified in the XML returned by :py:meth:`.XMLModel.to_xml`.
+    xml_encoding = 'UTF-8'
+
+    def to_xml(self, role: str=None, app_data: dict=None, encoding: str=None, **kwargs) -> str:
         """
         Return a string of XML that represents this model.
 
@@ -43,7 +49,7 @@ class XMLModel(Model):
             root,
             pretty_print=True,
             xml_declaration=True,
-            encoding=encoding
+            encoding=encoding or self.xml_encoding
         )
 
     def primitive_to_xml(self, primitive: dict, parent: 'lxml.etree._Element'=None):
