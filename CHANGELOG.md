@@ -1,3 +1,7 @@
+# Release 0.2.1 - Friday 11 November  15:54:21 AEDT 2016
+
+- Ensure that lists with `None` value aren't turned into `[None]` (#7)
+
 # Release 0.2.0 - Thursday 3 November  23:49:32 AEDT 2016
 
 - Allow user to set XML encoding (#6)

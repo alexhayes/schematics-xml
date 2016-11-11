@@ -842,6 +842,40 @@ class TestEnsureLists:
         # Assert good data stays good
         assert actual == expected
 
+    def test_model_with_listtype_of_none(self):  # pylint: disable=no-self-use,invalid-name
+        """
+        Ensure a model with a list type that has a value of None isn't turned into ``[None]``.
+        """
+        class TestModel(XMLModel):
+            numbers = ListType(IntType())
+
+        bad_data = dict(numbers=None)
+        actual = ensure_lists_in_model(bad_data, TestModel)
+        expected = dict(numbers=None)
+        # Assert bad data can be turned good
+        assert actual == expected
+
+        actual = ensure_lists_in_model(expected, TestModel)
+        # Assert good data stays good
+        assert actual == expected
+
+    def test_model_with_listtype_of_mixed_value(self):  # pylint: disable=no-self-use,invalid-name
+        """
+        Ensure a model with a list type that has a value ``[1, None]`` is handled correctly.
+        """
+        class TestModel(XMLModel):
+            numbers = ListType(IntType())
+
+        bad_data = dict(numbers=[1, None])
+        actual = ensure_lists_in_model(bad_data, TestModel)
+        expected = dict(numbers=[1, None])
+        # Assert bad data can be turned good
+        assert actual == expected
+
+        actual = ensure_lists_in_model(expected, TestModel)
+        # Assert good data stays good
+        assert actual == expected
+
     def test_model_with_listtype_of_modeltype(self):  # pylint: disable=no-self-use,invalid-name
         """
         Test that a model with a list type of models can correctly be
