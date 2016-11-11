@@ -191,6 +191,10 @@ def ensure_lists_in_model(raw_data: dict, model_cls: XMLModel):
 
 def ensure_lists_in_value(value: 'typing.Any', field: BaseType):
 
+    if value is None:
+        # Don't turn None items into a list of None items
+        return None
+
     if isinstance(field, ListType):
         if not isinstance(value, list):
             value = [
